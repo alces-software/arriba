@@ -46,3 +46,6 @@ pkg
 
 # For rubinius:
 #*.rbc
+
+# mjt - Best practice is that, for gems, we ignore Gemfile.lock
+Gemfile.lock
