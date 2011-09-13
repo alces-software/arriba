@@ -3,7 +3,7 @@ require 'alces-gem-base/version'
 
 Gem::Specification.new do |s|
   s.name = 'alces-gem-base'
-  s.version = AlcesGemBase::VERSION
+  s.version = Alces::Gem::Base::VERSION
   s.platform = Gem::Platform::RUBY
   s.date = '2011-09-13'
   s.authors = ['Mark J. Titorenko']
