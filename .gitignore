@@ -1,3 +1,7 @@
+*.gem
+.bundle
+Gemfile.lock
+pkg/*
 # rcov generated
 coverage
 
@@ -7,12 +11,6 @@ rdoc
 # yard generated
 doc
 .yardoc
-
-# bundler
-.bundle
-
-# jeweler generated
-pkg
 
 # Have editor/IDE/OS specific files you need to ignore? Consider using a global gitignore: 
 #
@@ -28,24 +26,18 @@ pkg
 # For MacOS:
 #
 #.DS_Store
-
+#
 # For TextMate
 #*.tmproj
 #tmtags
-
+#
 # For emacs:
 #*~
 #\#*
 #.\#*
-
+#
 # For vim:
 #*.swp
-
-# For redcar:
-#.redcar
-
-# For rubinius:
-#*.rbc
-
+#
 # mjt - Best practice is that, for gems, we ignore Gemfile.lock
 Gemfile.lock
