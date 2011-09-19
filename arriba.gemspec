@@ -3,7 +3,7 @@ require 'arriba/version'
 
 Gem::Specification.new do |s|
   s.name = 'arriba'
-  s.version = Alces::Gem::Base::VERSION
+  s.version = Arriba::VERSION
   s.platform = Gem::Platform::RUBY
   s.date = '2011-09-13'
   s.authors = ['Mark J. Titorenko']
