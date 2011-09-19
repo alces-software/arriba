@@ -1,19 +1,15 @@
 module Arriba
   class Api
     module Management
-      def rename
-        result = volume.rename(path,params[:name])
-        if result == true
-          { 
-            :added => [volume.file(volume.dirname(path),params[:name])],
-            :removed => [volume.hash_for(path)]
-          }
-        else
-          { :error => result }
-        end
+      def rename(volume, path)
+        volume.rename(path,name)
+        { 
+          :added => [volume.file(volume.dirname(path),name)],
+          :removed => [volume.hash_for(path)]
+        }
       end
 
-      def file
+      def file(volume, path)
         ## download a remote file
         filename = volume.name_for(path)
         mimetype = volume.mimetype(path)
@@ -23,19 +19,15 @@ module Arriba
                                  disposition_for(mimetype))
       end
       
-      def get
+      def get(volume, path)
         ## get contents of a file
         {:content => volume.read(path)}
       end
 
-      def put
+      def put(volume, path)
         ## write contents to a file
-        result = volume.write(path,params[:content])
-        if result == true
-          { :changed => [volume.file(path)] }
-        else
-          { :error => result }
-        end
+        volume.write(path,params[:content])
+        { :changed => [volume.file(path)] }
       end
 
       private

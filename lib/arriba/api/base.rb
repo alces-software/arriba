@@ -21,23 +21,87 @@ module Arriba
       include Arriba::Api::Management
 
       # def tmb
-      # end
       # def size
-      # end
       # def upload
-      # end
       # def archive
-      # end
       # def extract
-      # end
       # def search
-      # end
       # def info
-      # end
       # def dim
-      # end
       # def resize
-      # end
+
+      def target(cmd = nil)
+        volume, path = if params[:target].present?
+                         v, p = Arriba::Routing::route(params[:target])
+                         # Prevent requests for '.' and '..' breaking elfinder client
+                         raise "Invalid target path: '#{p}'" if p =~ /\.$/
+                         v = volumes.find{|vol| vol.id == v}
+                         [v,p]
+                       else
+                         [volumes.first, '/']
+                       end
+        if cmd.nil?
+          yield(volume, path)
+        else
+          send(cmd, volume, path)
+        end
+      end
+
+      private
+
+      def name
+        params[:name]
+      end
+
+      def respond_with(sym)
+        errors = []
+        results = []
+        targets do |volume, path|
+          begin
+            results << yield(volume,path)
+          rescue
+            errors << $!.message
+          end
+        end
+
+        {}.tap do |data|
+          data[sym] = results if results.any?
+          data[:error] = errors.join('<br />') if errors.any?
+        end    
+      end
+      
+      def targets
+        params[:targets].each do |t|
+          v, p = Arriba::Routing::route(t)
+          v = volumes.find{|vol| vol.id == v}
+          yield(v,p)
+        end
+      end
+
+      def options
+        {
+          archivers: {},
+          # copyOverwrite enables a prompt before overwriting files
+          copyOverwrite: 1,
+          disabled: [],
+          path: 'Home/',
+          separator: '/',
+          tmbUrl: 'http://foobar/thumbs/',
+          url: 'http://foobar/'
+        }
+      end
+
+      def flagged?(sym)
+        params[sym] && params[sym] == '1'
+      end
+
+      def init?
+        flagged?(:init)
+      end
+      
+      def tree?
+        flagged?(:tree)
+      end
     end
   end
 end

@@ -1,7 +1,7 @@
 module Arriba
   class Api
     module Structures
-      def open
+      def open(volume, path)
         {
           :cwd => volume.cwd(path),
           :options => options
@@ -20,16 +20,16 @@ module Arriba
         end
       end
       
-      def tree
+      def tree(volume, path)
         { :tree => volume.tree(path) }
       end
       
       # find directory siblings and all parent directories up to the root
-      def parents
+      def parents(volume, path)
         { :tree => volume.parents(path) }
       end
       
-      def ls
+      def ls(volume, path)
         { :list => volume.ls(path) }
       end
     end

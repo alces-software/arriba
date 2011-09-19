@@ -41,14 +41,10 @@ module Arriba
 
     def mkdir(path,newdir)
       FileUtils.mkdir(abs(path,newdir)) && true
-    rescue
-      $!.message
     end
 
     def mkfile(path,newfile)
       FileUtils.touch(abs(path,newfile)) && true
-    rescue
-      $!.message
     end
 
     def rm(path)
@@ -58,21 +54,15 @@ module Arriba
       else
         FileUtils::rm(abs(path)) && true
       end
-    rescue
-      $!.message
     end
 
     def rename(path,newfile)
       FileUtils.mv(abs(path),abs(dirname(path),newfile)) && true
-    rescue
-      $!.message
     end
 
     def duplicate(path)
       FileUtils.cp_r(abs(path),abs(dirname(path),duplicate_name_for(path)))
       true
-    rescue
-      $!.message
     end
 
     def copy(src_path,dest_vol,dest_path)
@@ -83,8 +73,6 @@ module Arriba
       STDERR.puts "dest path: #{dest_path}, res as: #{dest_vol.abs(dest_path)}"
       FileUtils.cp_r(abs(src_path),dest_vol.abs(dest_path))
       true
-    rescue
-      $!.message
     end
 
     def move(src_path,dest_vol,dest_path)
@@ -93,8 +81,6 @@ module Arriba
       end
       FileUtils.mv(abs(src_path),dest_vol.abs(dest_path))
       true
-    rescue
-      $!.message
     end
 
     def read(path)
@@ -106,8 +92,6 @@ module Arriba
         io.print(content)
       end
       true
-    rescue
-      $!.message
     end
 
     def ls(path)

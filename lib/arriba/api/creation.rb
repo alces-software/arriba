@@ -1,22 +1,14 @@
 module Arriba
   class Api
     module Creation
-      def mkdir
-        result = volume.mkdir(path,params[:name])
-        if result == true
-          { :added => volume.tree(File.join(path,params[:name])) }
-        else
-          { :error => result }
-        end
+      def mkdir(volume, path)
+        volume.mkdir(path,name)
+        { :added => volume.tree( ::File.join(path,name) ) }
       end
       
-      def mkfile
-        result = volume.mkfile(path,params[:name])
-        if result == true
-          { :added => [volume.file(path,params[:name])] }
-        else
-          { :error => result }
-        end
+      def mkfile(volume, path)
+        volume.mkfile(path,name)
+        { :added => [ volume.file(path,name) ] }
       end
     end
   end

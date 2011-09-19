@@ -13,11 +13,13 @@ module Arriba
   class << self
     def execute(volumes,params)
       cmd = params[:cmd]
-      data = if cmd.present? && Arriba::Api.method_defined?(cmd)
-               Arriba::Api.new(volumes,params).send(cmd)
-             else
-               {:error => "Unsupported operation: #{cmd}"}
-             end
+      if cmd.present?
+        Arriba::Api::run(cmd,volumes,params)
+      else
+        raise "No operation supplied!"
+      end
+    rescue      
+      {:error => $!.message}
     end
   end
 end
