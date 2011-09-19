@@ -1,10 +1,10 @@
 module Arriba
   class Volume::Directory < Volume
-    attr_accessor :id, :root, :name
-    def initialize(id, name, root)
-      self.id = id
-      self.name = name
+    attr_accessor :root, :name, :id
+    def initialize(root, name = nil, id = nil)
       self.root = root
+      self.name = name || self.root
+      self.id = id || Arriba::Routing::encode(self.name)
     end
 
     def cwd(path)
