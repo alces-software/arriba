@@ -164,6 +164,10 @@ module Arriba
       "#{self.id}_#{Arriba::Routing::encode(path)}"
     end
 
+    def io(path)
+      ::File.new(abs(path))
+    end
+
     protected
     def abs(*args)
       ::File.join(root,*args)

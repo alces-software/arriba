@@ -17,23 +17,10 @@ module Arriba
         ## download a remote file
         filename = volume.name_for(path)
         mimetype = volume.mimetype(path)
-        disp = if params[:download] == '0' && mimetype =~ /^image|text\//i || mimetype == 'application/x-shockwave-flash'
-                 # if this is an image or text or (fsr) flash file, we allow display inline
-                 "inline"
-               else
-                 "attachment" 
-               end
-        if request.env['HTTP_USER_AGENT'] =~ /msie/i
-          headers['Pragma'] = 'public'
-          headers["Content-type"] = mimetype
-          headers['Cache-Control'] = 'no-cache, must-revalidate, post-check=0, pre-check=0'
-          headers['Content-Disposition'] = "#{disp}; filename=\"#{filename}\"" 
-          headers['Expires'] = "0" 
-        else
-          headers["Content-Type"] ||= mimetype
-          headers["Content-Disposition"] = "#{disp}; filename=\"#{filename}\"" 
-        end
-        volume.read(path)
+        Arriba::FileResponse.new(volume.io(path), 
+                                 filename,
+                                 mimetype,
+                                 disposition_for(mimetype))
       end
       
       def get
@@ -48,6 +35,22 @@ module Arriba
           { :changed => [volume.file(path)] }
         else
           { :error => result }
+        end
+      end
+
+      private
+      def inlineable?(mimetype)
+        # if this is an image or text or (fsr) flash file, we allow
+        # display inline
+        mimetype =~ /^image|text\//i || 
+          mimetype == 'application/x-shockwave-flash'
+      end
+
+      def disposition_for(mimetype)
+        if params[:download] == '0' && inlineable?(mimetype)
+          "inline"
+        else
+          "attachment" 
         end
       end
     end
