@@ -3,7 +3,7 @@ module Arriba
     module Deletion
       def rm
         # accepts a targets[] array
-        respond_with(:removed) do |v,p|
+        each_target(:removed) do |v,p|
           v.rm(p)
           v.hash_for(p)
         end

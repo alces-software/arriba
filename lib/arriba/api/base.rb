@@ -53,15 +53,15 @@ module Arriba
         params[:name]
       end
 
-      def respond_with_destination(sym)
-        respond_with(sym) do |v,p|
-          vol_id, dest_path = Arriba::Routing::route(params[:dst])
-          dest_volume = volumes.find{|vol| vol.id == vol_id}
+      def each_target_with_destination(sym)
+        vol_id, dest_path = Arriba::Routing::route(params[:dst])
+        dest_volume = volumes.find{|vol| vol.id == vol_id}
+        each_target(sym) do |v,p|
           yield(v, p, dest_volume, dest_path)
         end
       end
 
-      def respond_with(sym)
+      def each_target(sym)
         errors = []
         results = []
         targets do |volume, path|
