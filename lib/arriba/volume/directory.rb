@@ -157,8 +157,11 @@ module Arriba
     private
     def read_mimetype(path)
       begin
-        reader = ['/usr/bin/file','--mime-type','-b',abs(path)]
-        IO.popen(reader) { |io| io.read }.chomp
+# this only works with file v5+ but RHEL5 only ships with file v4. sigh.
+#        reader = ['/usr/bin/file','--mime-type','-b',abs(path)]
+#        IO.popen(reader) { |io| io.read }.chomp
+        reader = ['/usr/bin/file','--mime','-b',abs(path)]
+        IO.popen(reader) { |io| io.read }.chomp.split(';').first
       rescue
         'unknown/unknown'
       end
