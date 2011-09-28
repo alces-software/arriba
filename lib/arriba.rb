@@ -8,9 +8,10 @@ require 'arriba/file_response'
 require 'arriba/root'
 require 'arriba/volume'
 require 'arriba/volume/directory'
+require 'arriba/volume/irods'
 
 module Arriba
-  class << self
+  module Base
     def execute(volumes,params)
       cmd = params[:cmd]
       if cmd.present?
@@ -22,6 +23,7 @@ module Arriba
       {:error => $!.message}
     end
   end
+  extend Arriba::Base
 end
 
 if Object.const_defined?(:ARRIBA_PATH)
