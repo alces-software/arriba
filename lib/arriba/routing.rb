@@ -1,3 +1,5 @@
+require 'base64'
+
 module Arriba
   module Routing
     class << self
@@ -16,7 +18,7 @@ module Arriba
       def route(target)
         # XXX - ruby 1.9
         m = target.match(/^(?<volume>.*?)_(?<path>.*)$/)
-        STDERR.puts "routed vol: #{m[:volume]}, routed path: #{m[:path]}, decoded path: #{decode(m[:path])}"
+        # STDERR.puts "routed vol: #{m[:volume]}, routed path: #{m[:path]}, decoded path: #{decode(m[:path])}"
         [m[:volume],decode(m[:path])]
       end
     end
