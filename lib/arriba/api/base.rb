@@ -94,8 +94,8 @@ module Arriba
           disabled: [],
           path: 'Home/',
           separator: '/',
-          tmbUrl: 'http://foobar/thumbs/',
-          url: 'http://foobar/'
+#          tmbUrl: 'http://foobar/thumbs/',
+#          url: 'http://foobar/'
         }
       end
 
