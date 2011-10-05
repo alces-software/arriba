@@ -6,9 +6,13 @@ require 'arriba/mime_type'
 require 'arriba/file'
 require 'arriba/file_response'
 require 'arriba/root'
+require 'arriba/operations/base'
+require 'arriba/operations/file'
 require 'arriba/volume'
 require 'arriba/volume/directory'
+# XXX - move these out to an extension gem
 require 'arriba/volume/irods'
+require 'arriba/volume/polymorph_directory'
 
 module Arriba
   module Base
@@ -20,6 +24,7 @@ module Arriba
         raise "No operation supplied!"
       end
     rescue      
+      STDERR.puts $!.backtrace
       {:error => $!.message}
     end
   end
