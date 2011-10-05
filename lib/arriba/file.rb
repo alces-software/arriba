@@ -1,3 +1,5 @@
+require 'active_support/core_ext/module/delegation'
+
 module Arriba
   class File
     delegate :encode, :to => Arriba::Routing
@@ -35,15 +37,11 @@ module Arriba
     end
 
     def date
-      stat.mtime
+      volume.date(path)
     end
 
     def size
-      stat.size
-    end
-
-    def stat
-      @stat ||= volume.stat(path)
+      volume.size(path)
     end
 
     def mimetype
@@ -51,7 +49,7 @@ module Arriba
     end
 
     def to_hash
-      {
+      @hash ||= {
         'name' => basename,
         'hash' => "#{volume.id}_#{encode(path)}",
         'phash' => "#{volume.id}_#{encode(dirname)}",
