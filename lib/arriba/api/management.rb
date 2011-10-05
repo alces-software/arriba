@@ -16,7 +16,8 @@ module Arriba
         Arriba::FileResponse.new(volume.io(path), 
                                  filename,
                                  mimetype,
-                                 disposition_for(mimetype))
+                                 disposition_for(mimetype),
+                                 volume.size(path))
       end
       
       def get(volume, path)
@@ -34,12 +35,13 @@ module Arriba
       def inlineable?(mimetype)
         # if this is an image or text or (fsr) flash file, we allow
         # display inline
-        mimetype =~ /^image|text\//i || 
+        mimetype =~ /^(image|text)\//i || 
           mimetype == 'application/x-shockwave-flash'
       end
 
       def disposition_for(mimetype)
-        if params[:download] == '0' && inlineable?(mimetype)
+#        if params[:download] == '0' && inlineable?(mimetype)
+        if params[:download] != '1' && inlineable?(mimetype)
           "inline"
         else
           "attachment" 
