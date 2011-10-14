@@ -2,12 +2,12 @@ module Arriba
   class Api
     module Structures
       def open(volume, path)
-        {
-          :cwd => volume.cwd(path),
-          :options => options
-        }.tap do |data|
+        { :options => options }.tap do |data|
+          cwd_thread = Thread.new { Thread.current[:cwd] = volume.cwd(path) }
           if init?
-            files = volumes.map { |vol| vol.files('/') }.flatten
+            files = volumes.map do |vol|
+              Thread.new { Thread.current[:files] = vol.files('/') }
+            end.map { |t| t.join && t[:files] }.flatten
             files += ( path == '/' ? [] : (volume.files(path) + volume.parents(path)) )
             data.merge!({
                           :api => '2.0',
@@ -16,7 +16,8 @@ module Arriba
           else
             files = volume.files(path)
           end
-          data.merge!(:files => files)
+          cwd_thread.join
+          data.merge!(:files => files, :cwd => cwd_thread[:cwd])
         end
       end
       
