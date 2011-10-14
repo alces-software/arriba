@@ -53,7 +53,7 @@ module Arriba
         self
       end
 
-      def represent(volume, path)
+      def represent(path)
         Arriba::File.new(volume, path)
       end
 
