@@ -36,6 +36,7 @@ module Arriba
         # if this is an image or text or (fsr) flash file, we allow
         # display inline
         mimetype =~ /^(image|text)\//i || 
+          mimetype == 'application/pdf' || 
           mimetype == 'application/x-shockwave-flash'
       end
 
