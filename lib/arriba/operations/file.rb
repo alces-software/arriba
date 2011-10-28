@@ -131,7 +131,8 @@ module Arriba
           # this only works with file v5+ but RHEL5 only ships with file v4. sigh.
           #        reader = ['/usr/bin/file','--mime-type','-b',abs(path)]
           #        IO.popen(reader) { |io| io.read }.chomp
-          reader = ['/usr/bin/file','--mime','-b',abs(path)]
+          # File.absolute_path is ruby 1.9 only....
+          reader = ['/usr/bin/file','-m',::File.absolute_path('../../../../etc/magic',__FILE__),'--mime','-b',abs(path)]
           IO.popen(reader) { |io| io.read }.chomp.split(';').first
         rescue
           'unknown/unknown'
