@@ -2,7 +2,7 @@ module Arriba
   module Target
     class Local < Arriba::Target::Base
       def file_for(path)
-        LocalFile.new(File.join(dir,path))
+        LocalFile.new(::File.join(dir,path))
       end
 
       def to_volume
@@ -11,10 +11,10 @@ module Arriba
 
       class LocalFile < Struct.new(:path)
         def read_open
-          File.open(path,'rb')
+          ::File.open(path,'rb')
         end
         def open
-          File.open(path,'wb')
+          ::File.open(path,'wb')
         end
       end
     end
