@@ -8,5 +8,9 @@ module Arriba
     def hash_for(path)
       "#{self.id}_#{Arriba::Routing::encode(path)}"
     end
+
+    def shortcut?
+      false
+    end
   end
 end

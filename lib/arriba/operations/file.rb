@@ -52,13 +52,21 @@ module Arriba
         true
       end
 
-      def copy(src_path,dest_path)
-        FileUtils.cp_r(abs(src_path),abs(dest_path))
+      def copy(src_path,dest_path,shortcut = false)
+        if !shortcut
+          src_path = abs(src_path)
+          dest_path = abs(dest_path)
+        end
+        FileUtils.cp_r(src_path,dest_path)
         true
       end
 
-      def move(src_path,dest_path)
-        FileUtils.mv(abs(src_path),abs(dest_path))
+      def move(src_path,dest_path,shortcut = false)
+        if !shortcut
+          src_path = abs(src_path)
+          dest_path = abs(dest_path)
+        end
+        FileUtils.mv(src_path,dest_path)
         true
       end
 

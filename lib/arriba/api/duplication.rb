@@ -17,10 +17,12 @@ module Arriba
         each_target_with_destination(:added) do |src_vol, src_path, dest_vol, dest_path|
           if src_vol == dest_vol
             src_vol.copy(src_path,dest_path)
-            dest_vol.file(dest_path, dest_vol.name_for(src_path))
+          elsif src_vol.shortcut?(dest_vol)
+            src_vol.copy(src_vol.abs(src_path),dest_vol.abs(dest_path), true)
           else
             raise "Unable to copy across volumes"
           end
+          dest_vol.file(dest_path, dest_vol.name_for(src_path))
         end
       end
 
@@ -29,11 +31,14 @@ module Arriba
         each_target_with_destination(:added) do |src_vol, src_path, dest_vol, dest_path|
           if src_vol == dest_vol
             src_vol.move(src_path,dest_path)
-            removed << src_vol.hash_for(src_path)
-            dest_vol.file(dest_path,dest_vol.name_for(src_path))
+          elsif src_vol.shortcut?(dest_vol)
+            src_vol.move(src_vol.abs(src_path),dest_vol.abs(dest_path), true)
           else
+            # XXX - should combine the error with :removed
             raise "Unable to move across volumes"
           end
+          removed << src_vol.hash_for(src_path)
+          dest_vol.file(dest_path,dest_vol.name_for(src_path))
         end.tap do |data|
           data[:removed] = removed if removed.any?
         end    

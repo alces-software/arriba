@@ -11,5 +11,11 @@ module Arriba
       self.name = name
       self.root = root
     end
+
+    def shortcut?(dest_vol)
+      # can always shortcut if we're only operating within the scope
+      # of the local filesystem.      
+      dest_vol.is_a?(Arriba::Volume::Directory)
+    end
   end
 end
