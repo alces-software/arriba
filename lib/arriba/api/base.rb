@@ -91,9 +91,9 @@ module Arriba
         end
       end
 
-      def options(path)
+      def options
         {
-          path: path,
+          path: '/', #path,
           archivers: {
             create: [
               "application/x-tar",
