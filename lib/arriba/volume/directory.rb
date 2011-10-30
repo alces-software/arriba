@@ -2,6 +2,8 @@ module Arriba
   class Volume::Directory < Volume
     include Arriba::Operations::File
 
+    attr_accessor :name
+
     def initialize(root, name = nil, id = nil)
       name ||= root
       id ||= Arriba::Routing::encode(name)
