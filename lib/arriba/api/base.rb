@@ -3,6 +3,7 @@ require 'arriba/api/creation'
 require 'arriba/api/deletion'
 require 'arriba/api/duplication'
 require 'arriba/api/management'
+require 'arriba/api/archiving'
 
 module Arriba
   class Api
@@ -19,13 +20,13 @@ module Arriba
       include Arriba::Api::Deletion
       include Arriba::Api::Duplication
       include Arriba::Api::Management
+      include Arriba::Api::Archiving
 
       # def tmb
       # def size
       # def upload
-      # def archive
-      # def extract
       # def search
+      # XXX - info needs more investigation
       # def info
       # def dim
       # def resize
@@ -51,6 +52,10 @@ module Arriba
 
       def name
         params[:name]
+      end
+
+      def mimetype
+        params[:type]
       end
 
       def each_target_with_destination(sym)
@@ -86,13 +91,26 @@ module Arriba
         end
       end
 
-      def options
+      def options(path)
         {
-          archivers: {},
+          path: path,
+          archivers: {
+            create: [
+              "application/x-tar",
+              "application/x-gzip",
+              "application/x-bzip2",
+              "application/zip"
+            ],
+            extract: [
+              "application/x-tar",
+              "application/x-gzip",
+              "application/x-bzip2",
+              "application/zip"
+            ]
+          },
           # copyOverwrite enables a prompt before overwriting files
           copyOverwrite: 1,
           disabled: [],
-          path: 'Home/',
           separator: '/',
 #          tmbUrl: 'http://foobar/thumbs/',
 #          url: 'http://foobar/'
