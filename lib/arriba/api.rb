@@ -5,7 +5,8 @@ module Arriba
     SINGLE_TARGET_COMMANDS = [
                               'open','tree','parents','ls',
                               'mkdir', 'mkfile',
-                              'rename', 'file', 'get', 'put'
+                              'rename', 'file', 'get', 'put',
+                              'extract'
                              ]
     class << self
       def singular?(cmd)
