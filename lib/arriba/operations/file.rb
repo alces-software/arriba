@@ -70,6 +70,77 @@ module Arriba
         true
       end
 
+      def archive_name_for(dir, basename, ext)
+        arch_name = "#{basename}.#{ext}"
+        if exists?(::File.join(dir,arch_name))
+          idx = 0
+          while exists?(::File.join(dir,arch_name))
+            arch_name = "#{basename}.#{idx += 1}.#{ext}"
+          end
+        end
+        arch_name
+      end
+
+      def archive(mimetype, paths)
+        dir = ::File.dirname(paths.first)
+        if paths.length > 1
+          basename = 'Archive'
+        else
+          basename = ::File.basename(paths.first)
+        end
+        # strip off leading '/'
+        paths = paths.map{|p|p[1..-1]} 
+        # XXX - assumes 'tar' and 'zip' are in the PATH
+        cmd = case mimetype
+              when 'application/x-tar'
+                archive_name = archive_name_for(dir, basename, 'tar')
+                ['tar','-cf',archive_name,*paths]
+              when 'application/x-gzip'
+                archive_name = archive_name_for(dir, basename, 'tar.gz')
+                ['tar','-czf',archive_name,*paths]
+              when 'application/x-bzip2'
+                archive_name = archive_name_for(dir, basename, 'tar.bz2')
+                ['tar','-cjf',archive_name,*paths]
+              when 'application/zip'
+                archive_name = archive_name_for(dir, basename, 'zip')
+                ['zip','-qr',archive_name,*paths]
+              else
+                Kernel::raise "Unknown archive format: #{mimetype}"
+              end
+        cmd << {:chdir => abs(dir)}
+        IO.popen(cmd) {|io| io.read }.tap do |r|
+          STDERR.puts "Command was: #{cmd.inspect}"
+          STDERR.puts "Archive command yielded: #{r.inspect}"
+        end
+        ::File.join(dir,archive_name)
+      end
+
+      def extract(path)
+        dir = ::File.dirname(path)
+        basename = ::File.basename(path)
+        out_dir = archive_name_for(dir, basename, 'extracted')
+        type = mimetype(path)
+        cmd = case type
+              when 'application/x-tar'
+                ['tar','-xSf',abs(path),'-C',out_dir]
+              when 'application/x-gzip'
+                ['tar','-xSzf',abs(path),'-C',out_dir]
+              when 'application/x-bzip2'
+                ['tar','-xSjf',abs(path),'-C',out_dir]
+              when 'application/zip'
+                ['unzip','-qn',abs(path),'-d',out_dir]
+              else
+                Kernel::raise "Unknown archive format: #{type}"
+              end
+        cmd << {:chdir => abs(dir)}
+        mkdir(dir,out_dir)
+        IO.popen(cmd) {|io| io.read }.tap do |r|
+          STDERR.puts "Command was: #{cmd.inspect}"
+          STDERR.puts "Archive command yielded: #{r.inspect}"
+        end
+        ::File.join(dir,out_dir)
+      end
+
       def read(path)
         ::File.read(abs(path))
       end
