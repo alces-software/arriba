@@ -14,6 +14,7 @@ module Arriba
 
       # Fulfilling Arriba::Operations::Base contract
       def entries(path)
+        # XXX - limit - also file sizes for previews, and downloads etc.
         Dir.entries(abs(path)) - ['.','..']
       end
 
@@ -25,6 +26,7 @@ module Arriba
         FileUtils.touch(abs(path,newfile)) && true
       end
 
+      # XXX - recursive delete of subdirectories? Too dangerous?
       def rm(path)
         if directory?(path)
           Dir::rmdir(abs(path)) && true
@@ -50,21 +52,13 @@ module Arriba
         true
       end
 
-      def copy(src_path,dest_vol,dest_path)
-        # XXX - cross volume copy needs to be special-cased elsewhere
-        unless Directory === dest_vol
-          raise "Direct copy not available across incompatible volumes"
-        end
-        FileUtils.cp_r(abs(src_path),dest_vol.abs(dest_path))
+      def copy(src_path,dest_path)
+        FileUtils.cp_r(abs(src_path),abs(dest_path))
         true
       end
 
-      def move(src_path,dest_vol,dest_path)
-        # XXX - cross volume copy needs to be special-cased elsewhere
-        unless Directory === dest_vol
-          raise "Direct move not available across incompatible volumes"
-        end
-        FileUtils.mv(abs(src_path),dest_vol.abs(dest_path))
+      def move(src_path,dest_path)
+        FileUtils.mv(abs(src_path),abs(dest_path))
         true
       end
 
