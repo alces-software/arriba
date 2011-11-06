@@ -33,9 +33,9 @@ doc
 #tmtags
 #
 # For emacs:
-#*~
-#\#*
-#.\#*
+*~
+\#*
+.\#*
 #
 # For vim:
 #*.swp
