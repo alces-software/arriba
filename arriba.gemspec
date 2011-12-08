@@ -5,7 +5,7 @@ Gem::Specification.new do |s|
   s.name = 'arriba'
   s.version = Arriba::VERSION
   s.platform = Gem::Platform::RUBY
-  s.date = '2011-09-13'
+  s.date = "2011-12-08"
   s.authors = ['Mark J. Titorenko']
   s.email = 'mark.titorenko@alces-software.com'
   s.homepage = 'http://github.com/mjtko/arriba'
@@ -28,6 +28,7 @@ Gem::Specification.new do |s|
   s.require_paths = ['lib']
 
   s.add_dependency 'activesupport'
+  s.add_development_dependency 'geminabox'
   s.add_development_dependency 'rspec'
   s.add_development_dependency 'bundler'
   s.add_development_dependency 'bueller'
