@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
   s.summary = %Q{TODO: one-line summary of your gem}
   s.description = %Q{TODO: detailed description of your gem}
   s.extra_rdoc_files = [
-    'LICENSE',
+    'LICENSE.txt',
     'README.rdoc',
   ]
 
