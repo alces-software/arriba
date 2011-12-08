@@ -9,8 +9,8 @@ Gem::Specification.new do |s|
   s.authors = ['Mark J. Titorenko']
   s.email = 'mark.titorenko@alces-software.com'
   s.homepage = 'http://github.com/mjtko/arriba'
-  s.summary = %Q{TODO: one-line summary of your gem}
-  s.description = %Q{TODO: detailed description of your gem}
+  s.summary = %Q{Arriba provides a ruby backend for the ElFinder 2.x API}
+  s.description = %Q{Arriba provides a ruby backend for the ElFinder JavaScript file browser 2.x API}
   s.extra_rdoc_files = [
     'LICENSE.txt',
     'README.rdoc',
