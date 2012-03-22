@@ -5,6 +5,28 @@ module Arriba
     module File
       include Arriba::Operations::Base
 
+      # RHEL5 ships with file v4
+      FILE_VERSION = begin
+                       version = IO.popen('/usr/bin/file --version 2>&1') { |io| io.readline.chomp }
+                       version =~ /file-4/ && :legacy || :modern
+                     rescue
+                       :modern
+                     end
+
+      FILE_IO_HANDLER = if FILE_VERSION == :legacy
+                          lambda { |io| io.read.chomp.split(';').first }
+                        else
+                          lambda { |io| io.read.chomp }
+                        end
+
+      FILE_COMMAND = if FILE_VERSION == :legacy
+                       # File.absolute_path is ruby 1.9 only....
+                       ['/usr/bin/file','-m',::File.absolute_path('../../../../etc/magic',__FILE__),'--mime','-b']
+                     else
+                       # this only works with file v5+
+                       ['/usr/bin/file','--mime-type','-b']
+                     end
+
       # Fulfilling Arriba::Operations::Base contract
       def tree(path)
         # path is a directory
@@ -15,7 +37,8 @@ module Arriba
       # Fulfilling Arriba::Operations::Base contract
       def entries(path)
         # XXX - limit - also file sizes for previews, and downloads etc.
-        Dir.entries(abs(path)) - ['.','..']
+#        Dir.entries(abs(path)) - ['.','..']
+        Dir.entries(abs(path)).reject{|s|s[0..0] == '.'}
       end
 
       def mkdir(path,newdir) 
@@ -28,11 +51,12 @@ module Arriba
 
       # XXX - recursive delete of subdirectories? Too dangerous?
       def rm(path)
-        if directory?(path)
-          Dir::rmdir(abs(path)) && true
-        else
-          FileUtils::rm(abs(path)) && true
-        end
+#         if directory?(path)
+#           Dir::rmdir(abs(path)) && true
+#         else
+#           FileUtils::rm(abs(path)) && true
+#         end
+        FileUtils::rm_rf(abs(path)) && true
       end
 
       def dirname(path)
@@ -161,7 +185,39 @@ module Arriba
       end
 
       def writable?(path)
-        ::File.writable?(abs(path))
+        readable?(path) && ::File.writable?(abs(path))
+      end
+
+      def user(path)
+        uid = stat(path).uid
+        {:id => uid}.tap do |h|
+          name = (Etc.getpwuid(uid).name rescue nil)
+          h[:name] = name unless name.nil?
+        end
+      end
+
+      def group(path)
+        gid = stat(path).gid
+        {:id => gid}.tap do |h|
+          name = (Etc.getgrgid(gid).name rescue nil)
+          h[:name] = name unless name.nil?
+        end
+      end
+
+      def mode(path)
+        stat(path).mode
+      end
+
+      def ctime(path)
+        stat(path).ctime
+      end
+
+      def atime(path)
+        stat(path).atime
+      end
+
+      def mtime(path)
+        stat(path).mtime
       end
 
       def children?(path)
@@ -171,15 +227,11 @@ module Arriba
       end
 
       def date(path)
-        stat(path).mtime
+        mtime(path)
       end
 
       def size(path)
         stat(path).size
-      end
-
-      def stat(path)
-        ::File.lstat(abs(path))
       end
 
       def mimetype(path)
@@ -190,7 +242,7 @@ module Arriba
         else
           # gsub to prune leading '.' character
           ext = ::File.extname(path).gsub(/^\./,'')
-          Arriba::MimeType::for(ext) || read_mimetype(path)
+          Arriba::MimeType::for(ext) || (readable?(path) ? read_mimetype(path) : 'unknown')
         end
       end
 
@@ -199,17 +251,14 @@ module Arriba
       end
 
       private
+      def stat(path)
+        ::File.lstat(abs(path))
+      end
+
       def read_mimetype(path)
-        begin
-          # this only works with file v5+ but RHEL5 only ships with file v4. sigh.
-          #        reader = ['/usr/bin/file','--mime-type','-b',abs(path)]
-          #        IO.popen(reader) { |io| io.read }.chomp
-          # File.absolute_path is ruby 1.9 only....
-          reader = ['/usr/bin/file','-m',::File.absolute_path('../../../../etc/magic',__FILE__),'--mime','-b',abs(path)]
-          IO.popen(reader) { |io| io.read }.chomp.split(';').first
-        rescue
-          'unknown/unknown'
-        end
+        IO.popen(FILE_COMMAND + [abs(path)], &FILE_IO_HANDLER)
+      rescue
+        'unknown'
       end
 
       def directory?(*args)

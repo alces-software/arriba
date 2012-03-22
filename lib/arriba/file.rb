@@ -37,7 +37,7 @@ module Arriba
     end
 
     def date
-      volume.date(path)
+      mtime
     end
 
     def size
@@ -48,18 +48,48 @@ module Arriba
       volume.mimetype(path)
     end
 
+    def mtime
+      volume.mtime(path)
+    end
+
+    def ctime
+      volume.ctime(path)
+    end
+
+    def atime
+      volume.atime(path)
+    end
+
+    def user
+      volume.user(path)
+    end
+
+    def group
+      volume.group(path)
+    end
+
+    def mode
+      volume.mode(path)
+    end
+
     def to_hash
       @hash ||= {
         'name' => basename,
         'hash' => "#{volume.id}_#{encode(path)}",
         'phash' => "#{volume.id}_#{encode(dirname)}",
-        'date' => date,
+        'date' => mtime,
         'mime' => mimetype,
         'size' => size,
         'dirs' => children? ? 1 : 0,
         'locked' => locked? ? 1 : 0,
         'read' => readable? ? 1 : 0,
-        'write' => writable? ? 1 : 0
+        'write' => writable? ? 1 : 0,
+        'user' => user,
+        'group' => group,
+        'atime' => atime,
+        'mtime' => mtime,
+        'ctime' => ctime,
+        'mode' => mode
       }
     end
   end
