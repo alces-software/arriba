@@ -9,14 +9,26 @@ module Arriba
       # module that mix in must define: #entries(path) and #tree(path)
       # in order to support #files, #ls and #parents.
       
-      def files(path)
-        [cwd(path)] + entries(path).map {|f| file(path,f) }
+      def files(path, include_cwd = true)
+        # x = entries(path).map {|f| file(path,f) }
+        x = include_cwd ? [cwd(path)] : []
+        x += entries(path).map {|f| file(path,f) }
+        if x.length > 1000
+          x = x[0..999]
+          x.unshift :truncated
+        end
+        x
       rescue Errno::EACCES
         [cwd(path)]
       end
 
       def ls(path)
-        entries(path)
+        x = entries(path)
+        if x.length > 1000
+          x = x[0..999]
+          x.unshift :truncated
+        end
+        x
       end
 
       def parents(path)
