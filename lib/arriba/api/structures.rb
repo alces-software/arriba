@@ -13,7 +13,7 @@ module Arriba
             files = volumes.map do |vol|
               Thread.new { Thread.current[:files] = vol.files('/') }
             end.map { |t| t.join && t[:files] }.flatten
-            files += ( path == '/' ? [] : (volume.files(path, true))) # + volume.parents(path)) )
+            files += ( path == '/' ? [] : volume.files(path) )
             data.merge!({
                           :api => '2.0',
                           :uplMaxSize => 0
