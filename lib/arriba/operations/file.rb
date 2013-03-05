@@ -170,10 +170,7 @@ module Arriba
       end
 
       def write(path,content)
-        ::File.open(abs(path),'w') do |io|
-          io.print(content)
-        end
-        true
+        ::File.write(abs(path), content) == content.length
       end
 
       def name_for(path)
