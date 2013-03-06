@@ -132,6 +132,16 @@ module Arriba
                 Kernel::raise "Unknown archive format: #{mimetype}"
               end
         cmd << {:chdir => abs(dir)}
+
+        # XXX This fails to report the error, if, for example disk quotas are
+        # exceeded by running this command.  We could raise an exception if
+        # the cmd has a non-zero exit value. But we have little way of telling
+        # what the precise problem was. There may be lots of messages on both
+        # standard error and standard output both before and after the consise
+        # explanation of why it failed. Do we want to present all of stderr to
+        # the user? Or the first N lines? Or the last N lines? Or continue
+        # ignoring the error?
+
         IO.popen(cmd) {|io| io.read }.tap do |r|
           STDERR.puts "Command was: #{cmd.inspect}"
           STDERR.puts "Archive command yielded: #{r.inspect}"
@@ -158,6 +168,16 @@ module Arriba
               end
         cmd << {:chdir => abs(dir)}
         mkdir(dir,out_dir)
+
+        # XXX This will fail to report an error, if, for example, there is
+        # insufficient disk quota remaining extract the archive. We could
+        # raise an exception if the cmd has a non-zero exit value. But we have
+        # little way of telling what the precise problem was. There may be
+        # lots of messages on both standard error and standard output both
+        # before and after the consise explanation of why it failed. Do we
+        # want to present all of stderr to the user? Or the first N lines? Or
+        # the last N lines? Or continue ignoring the error?
+
         IO.popen(cmd) {|io| io.read }.tap do |r|
           STDERR.puts "Command was: #{cmd.inspect}"
           STDERR.puts "Archive command yielded: #{r.inspect}"
