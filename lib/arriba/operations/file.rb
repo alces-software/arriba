@@ -263,6 +263,10 @@ module Arriba
         end
       end
 
+      def symlink?(path)
+        ::File.symlink?(abs(path))
+      end
+
       def io(path)
         ::File.new(abs(path))
       end
@@ -281,10 +285,6 @@ module Arriba
       def directory?(*args)
         f = abs(*args)
         !::File.symlink?(f) && ::File.directory?(f)
-      end
-
-      def symlink?(path)
-        ::File.symlink?(abs(path))
       end
 
       def exists?(path)

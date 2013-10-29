@@ -36,6 +36,10 @@ module Arriba
       volume.children?(path)
     end
 
+    def symlink?
+      volume.symlink?(path)
+    end
+
     def date
       mtime
     end
