@@ -267,6 +267,10 @@ module Arriba
         ::File.symlink?(abs(path))
       end
 
+      def symlink_target(path)
+        rel(::File.readlink(abs(path)))
+      end
+
       def io(path)
         ::File.new(abs(path))
       end
