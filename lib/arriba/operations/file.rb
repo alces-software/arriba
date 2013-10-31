@@ -277,7 +277,7 @@ module Arriba
 
       private
       def stat(path)
-        ::File.stat(abs(path))
+        ::File.lstat(abs(path))
       end
 
       def read_mimetype(path)
