@@ -48,12 +48,6 @@ module Arriba
         ::File.join(root,*args)
       end
 
-      def rel(path)
-        rel_path = ::File.realpath(path)
-        rel_path.slice!(::File.realpath(root))
-        rel_path
-      end
-
       private
       def volume
         self

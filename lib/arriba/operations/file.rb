@@ -268,7 +268,7 @@ module Arriba
       end
 
       def symlink_target(path)
-        rel(::File.readlink(abs(path)))
+        ::File.readlink(abs(path))
       end
 
       def io(path)
