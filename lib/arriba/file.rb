@@ -44,6 +44,10 @@ module Arriba
       volume.symlink_target(path)
     end
 
+    def rel(path)
+      volume.rel(path)
+    end
+
     def date
       mtime
     end
@@ -87,8 +91,6 @@ module Arriba
         'phash' => "#{volume.id}_#{encode(dirname)}",
         'date' => mtime,
         'mime' => mimetype,
-        'alias' => symlink? ? symlink_target : nil,
-        'thash' => symlink? ? "#{volume.id}_#{encode(symlink_target)}": nil,
         'size' => size,
         'dirs' => children? ? 1 : 0,
         'locked' => locked? ? 1 : 0,
@@ -100,7 +102,12 @@ module Arriba
         'mtime' => mtime,
         'ctime' => ctime,
         'mode' => mode
-      }
+      }.tap do |h|
+        if symlink? && volume.same_volume?(symlink_target)
+          h['alias'] = volume.name + rel(symlink_target)
+          h['thash'] = "#{volume.id}_#{encode(rel(symlink_target))}"
+        end
+      end
     end
   end
 end

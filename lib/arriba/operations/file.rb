@@ -206,7 +206,7 @@ module Arriba
       end
 
       def user(path)
-        uid = stat(path).uid
+        uid = lstat(path).uid
         {:id => uid}.tap do |h|
           name = (Etc.getpwuid(uid).name rescue nil)
           h[:name] = name unless name.nil?
@@ -214,7 +214,7 @@ module Arriba
       end
 
       def group(path)
-        gid = stat(path).gid
+        gid = lstat(path).gid
         {:id => gid}.tap do |h|
           name = (Etc.getgrgid(gid).name rescue nil)
           h[:name] = name unless name.nil?
@@ -222,19 +222,19 @@ module Arriba
       end
 
       def mode(path)
-        stat(path).mode
+        lstat(path).mode
       end
 
       def ctime(path)
-        stat(path).ctime
+        lstat(path).ctime
       end
 
       def atime(path)
-        stat(path).atime
+        lstat(path).atime
       end
 
       def mtime(path)
-        stat(path).mtime
+        lstat(path).mtime
       end
 
       def children?(path)
@@ -248,6 +248,10 @@ module Arriba
       end
 
       def size(path)
+        lstat(path).size
+      end
+
+      def target_size(path)
         stat(path).size
       end
 
@@ -255,12 +259,17 @@ module Arriba
         if directory?(path)
           'directory'
         elsif symlink?(path) 
-          exists?(path) ? 'symlink' : 'symlink-broken'
+          target = symlink_target(path)
+          rel(target) && exists?(rel(target)) && same_volume?(target) ? 'symlink' : 'symlink-broken'
         else
           # gsub to prune leading '.' character
           ext = ::File.extname(path).gsub(/^\./,'')
           Arriba::MimeType::for(ext) || (readable?(path) ? read_mimetype(path) : 'unknown')
         end
+      end
+
+      def target_mimetype(path)
+        symlink?(path) ? mimetype(rel(symlink_target(path))) : mimetype(path)
       end
 
       def symlink?(path)
@@ -276,8 +285,12 @@ module Arriba
       end
 
       private
-      def stat(path)
+      def lstat(path)
         ::File.lstat(abs(path))
+      end
+
+      def stat(path)
+        ::File.stat(abs(path))
       end
 
       def read_mimetype(path)
