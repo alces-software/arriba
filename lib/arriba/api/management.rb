@@ -12,12 +12,12 @@ module Arriba
       def file(volume, path)
         ## download a remote file
         filename = volume.name_for(path)
-        mimetype = volume.mimetype(path)
+        mimetype = volume.target_mimetype(path)
         Arriba::FileResponse.new(volume.io(path), 
                                  filename,
                                  mimetype,
                                  disposition_for(mimetype),
-                                 volume.size(path))
+                                 volume.target_size(path))
       end
       
       def get(volume, path)
