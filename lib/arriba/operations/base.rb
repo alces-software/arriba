@@ -56,7 +56,7 @@ module Arriba
 
       protected
       def abs(*args)
-        ::File.join(root,*args)
+        ::File.expand_path(root, ::File.join(*args))
       end
 
       private
