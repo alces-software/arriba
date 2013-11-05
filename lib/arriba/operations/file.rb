@@ -206,7 +206,7 @@ module Arriba
       end
 
       def user(path)
-        uid = lstat(path).uid
+        uid = stat(path).uid
         {:id => uid}.tap do |h|
           name = (Etc.getpwuid(uid).name rescue nil)
           h[:name] = name unless name.nil?
@@ -214,7 +214,7 @@ module Arriba
       end
 
       def group(path)
-        gid = lstat(path).gid
+        gid = stat(path).gid
         {:id => gid}.tap do |h|
           name = (Etc.getgrgid(gid).name rescue nil)
           h[:name] = name unless name.nil?
@@ -222,19 +222,19 @@ module Arriba
       end
 
       def mode(path)
-        lstat(path).mode
+        stat(path).mode
       end
 
       def ctime(path)
-        lstat(path).ctime
+        stat(path).ctime
       end
 
       def atime(path)
-        lstat(path).atime
+        stat(path).atime
       end
 
       def mtime(path)
-        lstat(path).mtime
+        stat(path).mtime
       end
 
       def children?(path)
@@ -248,10 +248,6 @@ module Arriba
       end
 
       def size(path)
-        lstat(path).size
-      end
-
-      def target_size(path)
         stat(path).size
       end
 
@@ -285,10 +281,6 @@ module Arriba
       end
 
       private
-      def lstat(path)
-        ::File.lstat(abs(path))
-      end
-
       def stat(path)
         ::File.stat(abs(path))
       end

@@ -17,7 +17,7 @@ module Arriba
                                  filename,
                                  mimetype,
                                  disposition_for(mimetype),
-                                 volume.target_size(path))
+                                 volume.size(path))
       end
       
       def get(volume, path)
