@@ -293,7 +293,7 @@ module Arriba
 
       def directory?(*args)
         f = abs(*args)
-        !::File.symlink?(f) && ::File.directory?(f)
+        ::File.directory?(f)
       end
 
       def exists?(path)
