@@ -1,6 +1,7 @@
 module Arriba
   class Volume
-    attr_accessor :id
+    attr_accessor :id, :all_volumes
+    
     def initialize(id)
       self.id = id
     end

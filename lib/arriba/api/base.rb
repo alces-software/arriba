@@ -11,6 +11,7 @@ module Arriba
       attr_accessor :volumes, :params
 
       def initialize(volumes, params)
+        volumes.each { |v| v.all_volumes = volumes }
         self.volumes = volumes
         self.params = params
       end
