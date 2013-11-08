@@ -4,6 +4,7 @@ module Arriba
   module Operations
     module File
       include Arriba::Operations::Base
+      #attr_accessor :all_volumes
 
       # RHEL5 ships with file v4
       FILE_VERSION = begin

@@ -43,10 +43,6 @@ module Arriba
         false
       end
 
-      def same_volume?(path)
-        path && ::File.exists?(path) && ::File.realpath(path).start_with?(real_root)
-      end
-
       def rel(path)
         return nil unless path && ::File.exists?(path)
         ::File.realpath(path).tap do |rel|
@@ -70,10 +66,6 @@ module Arriba
 
       def base
         Arriba::Root.new(volume,name)
-      end
-
-      def real_root
-        ::File.realpath(root)
       end
     end
   end

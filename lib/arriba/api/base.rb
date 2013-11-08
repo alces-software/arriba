@@ -11,7 +11,9 @@ module Arriba
       attr_accessor :volumes, :params
 
       def initialize(volumes, params)
-        volumes.each { |v| v.all_volumes = volumes }
+        STDERR.puts "API initialize called (#{volumes.size} volumes)"
+        # Tell each volume about others to faciliate symlink resolution
+        volumes.each { |v| STDERR.puts "Setting all_vols for #{v}"; v.all_volumes = volumes }
         self.volumes = volumes
         self.params = params
       end
@@ -33,6 +35,7 @@ module Arriba
       # def resize
 
       def target(cmd = nil)
+        STDERR.puts "target cmd = #{cmd}"
         volume, path = if params[:target].present?
                          v, p = Arriba::Routing::route(params[:target])
                          # Prevent requests for '.' and '..' breaking elfinder client

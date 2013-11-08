@@ -2,6 +2,7 @@ module Arriba
   class Api
     module Structures
       def open(volume, path)
+        STDERR.puts "open vol=#{volume}, path=#{path}, volumes=#{volumes.join(',')}"
 #        { :options => options([volume.name,path].join) }.tap do |data|
         if volume.nil?
           volume = volumes.first
@@ -11,7 +12,7 @@ module Arriba
           cwd_thread = Thread.new { Thread.current[:cwd] = volume.cwd(path) }
           if init?
             files = volumes.map do |vol|
-              Thread.new { Thread.current[:files] = vol.files('/') }
+              Thread.new { STDERR.puts "Launching thread to list files from #{vol}"; Thread.current[:files] = vol.files('/') }
             end.map { |t| t.join && t[:files] }.flatten
             files += ( path == '/' ? [] : volume.files(path) )
             data.merge!({
