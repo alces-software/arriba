@@ -277,6 +277,21 @@ module Arriba
         ::File.readlink(abs(path))
       end
 
+      def abs_symlink_target(path)
+        ::File.expand_path(symlink_target(path), ::File.dirname(abs(path)))
+      end
+
+      # Tries to return the location within this volume, or nil
+      def rel_path_to(path)
+        expanded_path = ::File.expand_path(path)
+        expanded_root = ::File.expand_path(root)
+        if m = /^#{expanded_root}(?<rel_path>\/.*)?$/.match(expanded_path)
+          m[:rel_path] || '/'
+        else
+          nil
+        end
+      end
+
       def io(path)
         ::File.new(abs(path))
       end

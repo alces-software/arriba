@@ -17,16 +17,5 @@ module Arriba
       # of the local filesystem.      
       dest_vol.is_a?(Arriba::Volume::Directory)
     end
-
-    # Tries to return the location within this volume, or nil
-    def rel_path_to(path)
-      expanded_path = ::File.expand_path(path)
-      expanded_root = ::File.expand_path(root)
-      if m = /^#{expanded_root}(?<rel_path>\/.*)?$/.match(expanded_path)
-        m[:rel_path] || '/'
-      else
-        nil
-      end
-    end
   end
 end

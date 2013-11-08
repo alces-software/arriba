@@ -40,12 +40,8 @@ module Arriba
       volume.symlink?(path)
     end
 
-    def symlink_target
-      volume.symlink_target(path)
-    end
-
-    def symlink_target_volpath
-      volume.symlink_target_volpath(path)
+    def abs_symlink_target
+      volume.abs_symlink_target(path)
     end
 
     def rel(path)
@@ -106,18 +102,13 @@ module Arriba
         'mtime' => mtime,
         'ctime' => ctime,
         'mode' => mode
-      }.tap do |h|
-        if symlink?
-          target_volume, target_path = symlink_target_volpath
-          if target_volume
-            h['alias'] = target_volume.name + target_path
-            h['thash'] = "#{target_volume.id}_#{encode(target_path)}"
-          end
-        end
-        #if basename =~ /testlink2/
-        #  h['alias'] = 'User Scratch/testdir1'
-        #  h['thash'] = 'VXNlciBTY3JhdGNo_L3Rlc3RkaXIx'
-        #end
+      }
+    end
+
+    def resolve_symlink(target_volume, target_rel_path)
+      if @hash && target_volume
+        @hash[:alias] = target_volume.name + target_rel_path
+        @hash[:thash] = "#{target_volume.id}_#{encode(target_rel_path)}"
       end
     end
   end
