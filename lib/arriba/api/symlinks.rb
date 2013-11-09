@@ -9,7 +9,7 @@ module Arriba
       def resolve_symlinks(data)
         resolver = lambda do |obj|
           case obj
-          when Array 
+          when Array
             obj.each(&resolver)
           when Hash
             obj.each_value(&resolver)
