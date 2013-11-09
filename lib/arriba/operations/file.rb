@@ -283,6 +283,10 @@ module Arriba
         end
       end
 
+      def exists?(path)
+        ::File.exists?(abs(path))
+      end
+
       def io(path)
         ::File.new(abs(path))
       end
@@ -305,10 +309,6 @@ module Arriba
       def directory?(*args)
         f = abs(*args)
         ::File.directory?(f)
-      end
-
-      def exists?(path)
-        ::File.exists?(abs(path))
       end
     end
   end

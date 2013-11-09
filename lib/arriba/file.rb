@@ -40,6 +40,10 @@ module Arriba
       volume.symlink?(path)
     end
 
+    def exists?
+      volume.exists?(path)
+    end
+
     def abs_symlink_target
       volume.abs_symlink_target(path)
     end
@@ -102,7 +106,7 @@ module Arriba
     end
 
     def resolve_symlink(target_volume, target_rel_path)
-      if @hash && target_volume
+      if @hash && exists? && target_volume
         @hash[:alias] = target_volume.name + target_rel_path
         @hash[:thash] = "#{target_volume.id}_#{encode(target_rel_path)}"
       end
