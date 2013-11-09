@@ -256,16 +256,12 @@ module Arriba
         if directory?(path)
           'directory'
         elsif symlink?(path) 
-          exists?(rel_symlink_target(path)) ? 'symlink' : 'symlink-broken'
+          exists?(path) ? 'symlink' : 'symlink-broken'
         else
           # gsub to prune leading '.' character
           ext = ::File.extname(path).gsub(/^\./,'')
           Arriba::MimeType::for(ext) || (readable?(path) ? read_mimetype(path) : 'unknown')
         end
-      end
-
-      def target_mimetype(path)
-        symlink?(path) ? mimetype(rel_symlink_target(path)) : mimetype(path)
       end
 
       def symlink?(path)
@@ -300,11 +296,6 @@ module Arriba
         ::File.readlink(abs(path))
       end
 
-      # Because most of the methods in this class want relative paths
-      def rel_symlink_target(path)
-        rel_path_to(symlink_target(path))
-      end
-
       def read_mimetype(path)
         IO.popen(FILE_COMMAND + [abs(path)], &FILE_IO_HANDLER)
       rescue
@@ -317,7 +308,7 @@ module Arriba
       end
 
       def exists?(path)
-        path && ::File.exists?(abs(path))
+        ::File.exists?(abs(path))
       end
     end
   end
