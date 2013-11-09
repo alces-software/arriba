@@ -1,7 +1,7 @@
 module Arriba
   class Api
     module Symlinks
-      def send(*args)
+      def open(*args)
         resolve_symlinks(super)
       end
 
