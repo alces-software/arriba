@@ -15,9 +15,8 @@ module Arriba
             obj.each_value(&resolver)
           when Arriba::File
             if obj.symlink?
-              STDERR.puts "Trying to resolve " + obj.path + " with target " + obj.abs_symlink_target
               target = obj.abs_symlink_target
-              target_volume, target_rel_path = symlink_target_volpath(target)
+              target_volume, target_rel_path = volume_relpath_for(target)
               obj.resolve_symlink(target_volume, target_rel_path)
             end
           end
@@ -25,9 +24,10 @@ module Arriba
         resolver.call(data)
       end
 
-      def symlink_target_volpath(target)
+      # Returns the first volume that 'contains' the specified path, or nil
+      def volume_relpath_for(path)
         rel_path = nil
-        vol = volumes.find { |vol| rel_path = vol.rel_path_to(target) }
+        vol = volumes.find { |vol| rel_path = vol.rel_path_to(path) }
         [vol, rel_path]
       end
     end

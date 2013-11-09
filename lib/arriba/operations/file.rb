@@ -272,22 +272,13 @@ module Arriba
         ::File.symlink?(abs(path))
       end
 
-      def symlink_target(path)
-        ::File.readlink(abs(path))
-      end
-
       def abs_symlink_target(path)
         ::File.expand_path(symlink_target(path), ::File.dirname(abs(path)))
       end
 
-      # Because most of the methods in this class expect a relative path
-      def rel_symlink_target(path)
-        rel_path_to(symlink_target(path))
-      end
-
       # Tries to return the location within this volume, or nil
-      def rel_path_to(path)
-        expanded_path = ::File.expand_path(path)
+      def rel_path_to(abs_path)
+        expanded_path = ::File.expand_path(abs_path)
         expanded_root = ::File.expand_path(root)
         if m = /^#{expanded_root}(?<rel_path>\/.*)?$/.match(expanded_path)
           m[:rel_path] || '/'
@@ -305,6 +296,15 @@ module Arriba
         ::File.lstat(abs(path))
       end
 
+      def symlink_target(path)
+        ::File.readlink(abs(path))
+      end
+
+      # Because most of the methods in this class want relative paths
+      def rel_symlink_target(path)
+        rel_path_to(symlink_target(path))
+      end
+
       def read_mimetype(path)
         IO.popen(FILE_COMMAND + [abs(path)], &FILE_IO_HANDLER)
       rescue
@@ -317,7 +317,7 @@ module Arriba
       end
 
       def exists?(path)
-        ::File.exists?(abs(path))
+        path && ::File.exists?(abs(path))
       end
     end
   end
