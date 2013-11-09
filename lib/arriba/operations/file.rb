@@ -256,8 +256,7 @@ module Arriba
         if directory?(path)
           'directory'
         elsif symlink?(path) 
-          target = symlink_target(path)
-          rel(target) && exists?(rel(target)) && same_volume?(target) ? 'symlink' : 'symlink-broken'
+          exists?(rel_symlink_target(path)) ? 'symlink' : 'symlink-broken'
         else
           # gsub to prune leading '.' character
           ext = ::File.extname(path).gsub(/^\./,'')
@@ -266,7 +265,7 @@ module Arriba
       end
 
       def target_mimetype(path)
-        symlink?(path) ? mimetype(rel(symlink_target(path))) : mimetype(path)
+        symlink?(path) ? mimetype(rel_symlink_target(path)) : mimetype(path)
       end
 
       def symlink?(path)
@@ -279,6 +278,11 @@ module Arriba
 
       def abs_symlink_target(path)
         ::File.expand_path(symlink_target(path), ::File.dirname(abs(path)))
+      end
+
+      # Because most of the methods in this class expect a relative path
+      def rel_symlink_target(path)
+        rel_path_to(symlink_target(path))
       end
 
       # Tries to return the location within this volume, or nil
@@ -298,7 +302,7 @@ module Arriba
 
       private
       def stat(path)
-        ::File.stat(abs(path))
+        ::File.lstat(abs(path))
       end
 
       def read_mimetype(path)

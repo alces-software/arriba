@@ -43,13 +43,6 @@ module Arriba
         false
       end
 
-      def rel(path)
-        return nil unless path && ::File.exists?(path)
-        ::File.realpath(path).tap do |rel|
-          rel.slice!(real_root)
-        end
-      end
-
       protected
       def abs(*args)
         ::File.join(root,*args)

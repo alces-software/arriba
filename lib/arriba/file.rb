@@ -44,10 +44,6 @@ module Arriba
       volume.abs_symlink_target(path)
     end
 
-    def rel(path)
-      volume.rel(path)
-    end
-
     def date
       mtime
     end
