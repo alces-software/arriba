@@ -113,7 +113,7 @@ module Arriba
           basename = ::File.basename(paths.first)
         end
         # strip off leading directory path
-        paths = paths.map{|p|p.gsub(/^#{dir}\//,'')} 
+        paths = paths.map{|p|p.gsub(/^#{dir}?\//,'')} 
         # XXX - assumes 'tar' and 'zip' are in the PATH
         cmd = case mimetype
               when 'application/x-tar'
