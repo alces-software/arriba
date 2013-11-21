@@ -127,7 +127,7 @@ module Arriba
                 ['tar','-cjf',archive_name,*paths]
               when 'application/zip'
                 archive_name = archive_name_for(dir, basename, 'zip')
-                ['zip','-qr',archive_name,*paths]
+                ['zip','-qry',archive_name,*paths]
               else
                 Kernel::raise "Unknown archive format: #{mimetype}"
               end
