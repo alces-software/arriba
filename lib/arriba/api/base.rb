@@ -4,6 +4,7 @@ require 'arriba/api/deletion'
 require 'arriba/api/duplication'
 require 'arriba/api/management'
 require 'arriba/api/archiving'
+require 'arriba/api/symlinks'
 
 module Arriba
   class Api
@@ -21,6 +22,7 @@ module Arriba
       include Arriba::Api::Duplication
       include Arriba::Api::Management
       include Arriba::Api::Archiving
+      include Arriba::Api::Symlinks
 
       # def tmb
       # def size

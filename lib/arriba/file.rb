@@ -36,6 +36,18 @@ module Arriba
       volume.children?(path)
     end
 
+    def symlink?
+      volume.symlink?(path)
+    end
+
+    def exists?
+      volume.exists?(path)
+    end
+
+    def abs_symlink_target
+      volume.abs_symlink_target(path)
+    end
+
     def date
       mtime
     end
@@ -91,6 +103,14 @@ module Arriba
         'ctime' => ctime,
         'mode' => mode
       }
+    end
+
+    def resolve_symlink(target_volume, target_rel_path)
+      if @hash && exists? && target_volume
+        @hash['alias'] = target_volume.name + target_rel_path
+        @hash['thash'] = "#{target_volume.id}_#{encode(target_rel_path)}"
+        @hash['size'] = target_volume.size(target_rel_path)
+      end
     end
   end
 end
