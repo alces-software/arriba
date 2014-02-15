@@ -12,6 +12,12 @@ module Arriba
       def file(volume, path)
         ## download a remote file
         filename = volume.name_for(path)
+
+        if volume.symlink?(path)
+          target = volume.abs_symlink_target(path)
+          volume, path = volume_relpath_for(target)
+        end
+
         mimetype = volume.mimetype(path)
         Arriba::FileResponse.new(volume.io(path), 
                                  filename,

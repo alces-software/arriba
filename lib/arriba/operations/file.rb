@@ -113,7 +113,7 @@ module Arriba
           basename = ::File.basename(paths.first)
         end
         # strip off leading directory path
-        paths = paths.map{|p|p.gsub(/^#{dir}\//,'')} 
+        paths = paths.map{|p|p.gsub(/^#{dir}?\//,'')} 
         # XXX - assumes 'tar' and 'zip' are in the PATH
         cmd = case mimetype
               when 'application/x-tar'
@@ -127,7 +127,7 @@ module Arriba
                 ['tar','-cjf',archive_name,*paths]
               when 'application/zip'
                 archive_name = archive_name_for(dir, basename, 'zip')
-                ['zip','-qr',archive_name,*paths]
+                ['zip','-qry',archive_name,*paths]
               else
                 Kernel::raise "Unknown archive format: #{mimetype}"
               end
@@ -263,6 +263,29 @@ module Arriba
         end
       end
 
+      def symlink?(path)
+        ::File.symlink?(abs(path))
+      end
+
+      def abs_symlink_target(path)
+        ::File.expand_path(symlink_target(path), ::File.dirname(abs(path)))
+      end
+
+      # Tries to return the location within this volume, or nil
+      def rel_path_to(abs_path)
+        expanded_path = ::File.expand_path(abs_path)
+        expanded_root = ::File.expand_path(root)
+        if m = /^#{expanded_root}(?<rel_path>\/.*)?$/.match(expanded_path)
+          m[:rel_path] || '/'
+        else
+          nil
+        end
+      end
+
+      def exists?(path)
+        ::File.exists?(abs(path))
+      end
+
       def io(path)
         ::File.new(abs(path))
       end
@@ -270,6 +293,10 @@ module Arriba
       private
       def stat(path)
         ::File.lstat(abs(path))
+      end
+
+      def symlink_target(path)
+        ::File.readlink(abs(path))
       end
 
       def read_mimetype(path)
@@ -280,15 +307,7 @@ module Arriba
 
       def directory?(*args)
         f = abs(*args)
-        !::File.symlink?(f) && ::File.directory?(f)
-      end
-
-      def symlink?(path)
-        ::File.symlink?(abs(path))
-      end
-
-      def exists?(path)
-        ::File.exists?(abs(path))
+        ::File.directory?(f)
       end
     end
   end
