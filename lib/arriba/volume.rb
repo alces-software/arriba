@@ -33,5 +33,9 @@ module Arriba
     def shortcut?
       false
     end
+
+    def options
+      {} # Extension point for overriding default options
+    end
   end
 end
