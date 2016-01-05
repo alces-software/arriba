@@ -30,7 +30,7 @@ module Arriba
       "#{self.id}_#{Arriba::Routing::encode(path)}"
     end
 
-    def shortcut?
+    def shortcut?(path)
       false
     end
 
