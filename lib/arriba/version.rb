@@ -20,5 +20,5 @@
 # https://github.com/alces-software/arriba
 #==============================================================================
 module Arriba
-  VERSION = "0.5.0"
+  VERSION = "0.7.0.dev"
 end

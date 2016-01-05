@@ -114,7 +114,7 @@ module Arriba
         end
       end
 
-      def options
+      def options(volume)
         {
           path: '/', #path,
           archivers: {
@@ -134,10 +134,8 @@ module Arriba
           # copyOverwrite enables a prompt before overwriting files
           copyOverwrite: 1,
           disabled: [],
-          separator: '/',
-#          tmbUrl: 'http://foobar/thumbs/',
-#          url: 'http://foobar/'
-        }
+          separator: '/'
+        }.merge(volume.options)
       end
 
       def flagged?(sym)
