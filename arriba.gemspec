@@ -5,7 +5,7 @@ Gem::Specification.new do |s|
   s.name = 'arriba'
   s.version = Arriba::VERSION
   s.platform = Gem::Platform::RUBY
-  s.date = "2016-01-05"
+  s.date = "2016-01-06"
   s.authors = ['Mark J. Titorenko']
   s.email = 'mark.titorenko@alces-software.com'
   s.homepage = 'http://github.com/alces-software/arriba'
