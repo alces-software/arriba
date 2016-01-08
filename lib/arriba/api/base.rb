@@ -134,7 +134,8 @@ module Arriba
           # copyOverwrite enables a prompt before overwriting files
           copyOverwrite: 1,
           disabled: [],
-          separator: '/'
+          separator: '/',
+          download_limit: -1 # Don't limit download size by default
         }.merge(volume.options)
       end
 
